@@ -1,0 +1,61 @@
+<mat-toolbar style="background-color: white; border-bottom-style: solid; border-bottom-width: thin; border-bottom-color: #eaeaea;">
+    <span>Add Task</span>
+    <span style="flex: 1 1 auto;"></span>
+    <button class="btn-dialog-close" mat-stroked-button (click)="onClose()" tabindex="-1" style="border: none;">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-toolbar>
+
+<!-- Sort out -->
+<!-- <form [formGroup]="service.form" style="margin: 10px" (submit)="onSubmit()">
+    <div>
+        <mat-form-field class="form-control" appearance="outline">
+            <mat-label>Description <b style="color:red">*</b></mat-label>
+            <input formControlName="description" matInput autocomplete="off">
+            <mat-error>A description is required</mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-control" appearance="outline">
+            <mat-label>Details</mat-label>
+            <textarea formControlName="details" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="5" cdkAutosizeMaxRows="10"></textarea>
+        </mat-form-field>
+        <mat-form-field style="width: 66%; font-size: 13px; margin-right: 2%;" appearance="outline">
+            <mat-label>Reminder Date <b style="color:red">*</b></mat-label>
+            <input formControlName="reminderDate" matInput [matDatepicker]="reminderDatePicker" autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="reminderDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #reminderDatePicker></mat-datepicker>
+            <mat-error>A reminder date is required</mat-error>
+        </mat-form-field>
+        <mat-form-field style="width: 30%; font-size: 13px;" appearance="outline">
+            <mat-label>Schedule from Today</mat-label>
+            <mat-select>
+                <mat-option value="0">None</mat-option>
+                <ng-container *ngFor="let dateSelection of dateSelections">
+                    <mat-option value="{{dateSelection.id}}">{{dateSelection.value}}</mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="form-control" appearance="outline">
+            <mat-label>Due Date</mat-label>
+            <input formControlName="dueDate" matInput [matDatepicker]="dueDatePicker" autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dueDatePicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="form-control" appearance="outline">
+            <mat-label>Tags</mat-label>
+            <mat-chip-list #tagChipList aria-label="Tags">
+                <mat-chip *ngFor="let tag of selectedTags" [selectable]="selectable" [removable]="removable" (removed)="removeTag(tag)" style="font-size: 12px;">
+                    {{tag}} <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+                <input #tagInput [formControl]="tagControl" [matAutocomplete]="inputAutocomplete" [matChipInputFor]="tagChipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addTag($event)" style="font-size: 14px;">
+            </mat-chip-list>
+            <mat-autocomplete #inputAutocomplete="matAutocomplete" (optionSelected)="tagSelected($event)">
+                <mat-option *ngFor="let tag of filteredTags | async" value="tag.name" style="font-size: 14px;">{{tag.name}}</mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <div class="button-row">
+        <button mat-raised-button color="warn" type="button" (click)="onClose()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="service.form.invalid">Add Task</button>
+    </div>
+</form> -->

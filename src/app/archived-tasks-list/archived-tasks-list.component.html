@@ -1,0 +1,67 @@
+<mat-table [dataSource]="taskList$ | async">
+    <ng-container matColumnDef="mark">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>                
+        <mat-cell *matCellDef="let task">
+            <button mat-mini-fab color="accent" matTooltip="Restore Task" mdTooltipClass="{'mat-tooltip': true}" (click)="markTaskAsNotDone(task.id)">
+                <mat-icon>settings_backup_restore</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="descr">
+        <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+        <mat-cell *matCellDef="let task">
+            <div matTooltip="{{task.description}}" matTooltipPosition="below" mdTooltipClass="{'mat-tooltip': true}">
+                {{task.description}}
+            </div>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="details">
+        <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
+        <mat-cell *matCellDef="let task">
+            <div matTooltip="{{task.details}}" matTooltipPosition="below" mdTooltipClass="{'mat-tooltip': true}" style="width: 100%">
+                <span class="details-row" *ngIf="task.details != null">{{task.details}}</span> 
+            </div>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="tags">
+        <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
+        <mat-cell *matCellDef="let task">
+            <div style="width: 100%">
+                <span  *ngIf="task.tags != null && task.tags.length > 0">
+                    <ng-container *ngFor="let tag of task.tags">
+                        <span class="tag-mini" matTooltip="{{tag}}" >{{tag}}</span>
+                    </ng-container>
+                </span>
+            </div>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="statusChangeDate">
+        <mat-header-cell *matHeaderCellDef>Completion Date</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.statusChangeDate}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+        <mat-cell *matCellDef="let task">
+            <button mat-icon-button matTooltip="View details" mdTooltipClass="{'mat-tooltip': true}" (click)="openTaskDetailsPopup(task)"><mat-icon>menu</mat-icon></button>
+            <button *ngIf='!isTodaysTask(task)' mat-icon-button matTooltip="Reschedule for Today" mdTooltipClass="{'mat-tooltip': true}" (click)="rescheduleTaskForToday(task.id)">
+                <mat-icon>calendar_today</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="Delete" mdTooltipClass="{'mat-tooltip': true}" (click)="deleteTask(task.id)"><mat-icon>delete_outline</mat-icon></button>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="loading">
+        <mat-footer-cell *matFooterCellDef colspan="4">
+            Retrieving tasks...
+        </mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="noData">
+        <mat-footer-cell *matFooterCellDef colspan="4">
+            No tasks available.
+        </mat-footer-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="columnHeaders"></mat-header-row>
+    <mat-row *matRowDef="let task; columns: columnHeaders;"></mat-row>
+    <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': taskList$ != null}"></mat-footer-row>
+    <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide': !(taskList$ != null && taskListIsEmpty())}"></mat-footer-row>
+</mat-table>
+<mat-paginator [pageSizeOptions]="[25, 50, 100]" [pageSize]="25" showFirstLastButtons></mat-paginator>

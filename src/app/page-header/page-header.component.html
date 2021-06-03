@@ -1,0 +1,90 @@
+<div *ngIf="!backEndStarted">
+    <h1 class="spinner-header-center">Starting</h1>
+    <mat-spinner diameter="200" class="mat-spinner-center"></mat-spinner>
+</div>
+
+<div class="container" *ngIf="backEndStarted">  
+    <div>
+        <table style="width: 100%">
+            <tr>
+                <td>
+                    <h2>
+                        <span class="heading">{{heading}}</span>
+                        <span class="heading-info">{{listInfo}}</span>
+                    </h2>
+                </td>
+
+                <td style="text-align: end;">
+                    <!-- start: Page Controls -->
+                    <div class="button-row">
+                        <button mat-raised-button color="primary" style="background-color: black" (click)="openAddTaskPopup()">Add Task</button>
+                        <a mat-raised-button color="primary" routerLink="/">Current Tasks</a>
+                        <a mat-raised-button color="primary" routerLink="/future">Future Tasks</a>
+                        <a mat-raised-button color="primary" routerLink="/completed">Completed Tasks</a>
+                    </div>
+                    <!-- end: Page Controls -->
+                </td>
+            </tr>
+        </table>
+
+        <!-- start: Search -->
+        <table>
+            <tr>
+                <td>
+                    <div class="search-div">
+                        <mat-form-field class="search-field" appearance="outline" 
+                            *ngIf="searchParameters.searchByReminderDateLimit == null || searchParameters.searchByReminderDateLimit == false">
+                            <input matInput [(ngModel)]="searchString" placeholder="Search" autocomplete="off">
+                            <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchString" (click)="clearSearchBox()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+
+                        <mat-form-field class="search-field" appearance="outline" *ngIf="searchParameters.searchByReminderDateLimit == true">
+                            <input matInput [matDatepicker]="reminderDateLimitPicker" [(ngModel)]="searchString" placeholder="Search for tasks before reminder date..." autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="reminderDateLimitPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #reminderDateLimitPicker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </td>
+
+                <td>
+                    <a mat-raised-button color="accent" routerLink="/search" [queryParams]="{ 
+                        searchString: searchString, 
+                        searchCurrentTasks: searchParameters.searchCurrentTasks, 
+                        searchFutureTasks: searchParameters.searchFutureTasks, 
+                        searchCompletedTasks: searchParameters.searchCompletedTasks,
+                        checkNotes: searchParameters.checkNotes,
+                        checkTags: searchParameters.checkTags,
+                        searchByReminderDateLimit: searchParameters.searchByReminderDateLimit
+                    }">
+                        Search
+                    </a>
+                </td>
+
+                <td>
+                    <!-- start: Search parameters -->
+                    <div class="checkbox-row">
+                        <ng-container *ngIf="searchParameters.searchByReminderDateLimit == null || searchParameters.searchByReminderDateLimit == false">
+                            <mat-checkbox color="primary" [(ngModel)]="searchParameters.searchCurrentTasks">Current Tasks</mat-checkbox>
+                            <mat-checkbox color="primary" [(ngModel)]="searchParameters.searchFutureTasks">Future Tasks</mat-checkbox>
+                            <mat-checkbox color="primary" [(ngModel)]="searchParameters.searchCompletedTasks">Completed Tasks</mat-checkbox>
+                            <mat-checkbox color="primary" [(ngModel)]="searchParameters.checkNotes">Search Notes</mat-checkbox>
+                            <mat-checkbox color="primary" [(ngModel)]="searchParameters.checkTags">Search Tags</mat-checkbox>
+                        </ng-container>
+                        <mat-checkbox color="primary" [(ngModel)]="searchParameters.searchByReminderDateLimit" (click)="reminderDateLimitSearch()">
+                            Search by Reminder Date Limit
+                        </mat-checkbox>
+                    </div>
+                    <!-- start: Search parameters -->
+                </td>
+            </tr>
+        </table>
+        <!-- end: Search -->
+    </div>
+    <hr/>
+
+    <div class="mat-elevation-z8">
+        <router-outlet></router-outlet>
+    </div>
+</div>

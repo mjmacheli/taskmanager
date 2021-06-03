@@ -1,0 +1,126 @@
+<mat-toolbar style="background-color: white;">
+    <span style="flex: 1 1 auto;"></span>   
+    <button class="btn-dialog-close" mat-stroked-button (click)="onClose()" tabindex="-1" style="border: none;">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-toolbar>
+<div>
+    <!-- Sort out -->
+    <!-- <form [formGroup]="service.form" style="margin: 10px" (submit)="editTask()">
+        <div>
+            <mat-form-field class="form-control" appearance="outline">
+                <mat-label>Description <b style="color:red">*</b></mat-label>
+                <input formControlName="description" matInput autocomplete="off">
+                <mat-error>A description is required</mat-error>
+            </mat-form-field>
+            <mat-form-field class="form-control" appearance="outline">
+                <mat-label>Details</mat-label>
+                <textarea formControlName="details" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="5" cdkAutosizeMaxRows="10"></textarea>
+            </mat-form-field>
+            <mat-form-field style="width: 66%; font-size: 13px; margin-right: 2%;" appearance="outline">
+                <mat-label>Reminder Date <b style="color:red">*</b></mat-label>
+                <input formControlName="reminderDate" matInput [matDatepicker]="reminderDatePicker" autocomplete="off">
+                <mat-datepicker-toggle matSuffix [for]="reminderDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #reminderDatePicker></mat-datepicker>
+                <mat-error>A reminder date is required</mat-error>
+            </mat-form-field>
+            <mat-form-field style="width: 30%; font-size: 13px;" appearance="outline">
+                <mat-label>Schedule from Today</mat-label>
+                <mat-select>
+                    <mat-option value="0">None</mat-option>
+                    <ng-container *ngFor="let dateSelection of dateSelections">
+                        <mat-option value="{{dateSelection.id}}">{{dateSelection.value}}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="form-control" appearance="outline">
+                <mat-label>Due Date</mat-label>
+                <input formControlName="dueDate" matInput [matDatepicker]="dueDatePicker" autocomplete="off">
+                <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #dueDatePicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="button-row" [ngClass]="{'hide':service.form.disabled}">
+            <button mat-raised-button color="warn" type="button" (click)="cancelEdit()">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="service.form.invalid">Save</button>
+        </div>
+    </form> -->
+
+    <!-- start: Tags -->
+    <ng-container *ngIf="tagAdditionPaneVisisble == false">
+        <ng-container *ngFor="let tag of selectedTags">
+            <span class="tag">{{tag}}</span>
+        </ng-container>
+    </ng-container>
+    <!-- end: Tags -->
+
+    <!-- start: App controls -->
+    <div class="button-row" style="margin-top: 3%" [ngClass]="{'hide':service.form.disabled}">
+        <button mat-mini-fab matTooltip="Add note" mdTooltipClass="{'mat-tooltip': true}" style="box-shadow: none; color: #505f79" 
+            [disabled]="noteAppButtonActive == false" (click)="toggleNotePane(false)">
+            <mat-icon>note_add</mat-icon>
+        </button>
+        <button mat-mini-fab matTooltip="Add tag" mdTooltipClass="{'mat-tooltip': true}" [disabled]="tagAppButtonActive == false" style="box-shadow: none; color: #505f79"
+            (click)="toggleTagPane(false)">
+            <mat-icon>local_offer</mat-icon>
+        </button>
+    </div>
+    <!-- end: App controls -->
+</div>
+
+<!-- start: Note handeling -->
+<div>
+    <ng-container *ngIf="noteInputVisible">
+        <mat-form-field class="form-control" appearance="outline">
+            <mat-label>Note</mat-label>
+            <textarea #noteContent matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"></textarea>
+        </mat-form-field>
+        <div class="button-row">
+            <button mat-raised-button color="warn" type="button" (click)="toggleNotePane(true)">Cancel</button>
+            <button mat-raised-button color="primary" type="button" (click)="addNote(noteContent.value)">Add Note</button>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="notesVisible == true">
+        <mat-list role="list">
+            <h3 style="font-family: Calibri;" *ngIf="task.notes.length > 0">Notes</h3>
+            <ng-container *ngFor="let note of task.notes">
+                <mat-list-item class="note-list-item" role="listitem" [matMenuTriggerFor]="noteOptionsMenu"  [ngClass]="{'disabled-menu': heading == 'Completed Tasks'}">
+                    <div contenteditable="noteEditable">{{note.note}}</div>
+                </mat-list-item>
+                <mat-menu #noteOptionsMenu="matMenu" xPosition="after">
+                    <ng-template matMenuContent>
+                        <button mat-menu-item (click)="noteEditable = true">Edit</button>
+                        <button mat-menu-item (click)="deleteNote(task.id, note.id)">Delete</button>
+                    </ng-template>
+                </mat-menu>
+            </ng-container>    
+        </mat-list>
+    </ng-container>
+</div>
+<!-- end: Note handeling -->
+
+<!-- start: Tag addition pane -->
+<ng-container *ngIf="tagAdditionPaneVisisble == true">
+    <mat-form-field class="form-control" appearance="outline">
+        <mat-label>Tags</mat-label>
+
+        <!-- Sort out -->
+        <!-- <mat-chip-list #tagChipList aria-label="Tags">
+            <mat-chip *ngFor="let tag of selectedTags" [selectable]="tagsSelectable" [removable]="tagsRemovable" (removed)="removeTag(tag)" style="font-size: 12px;">
+                {{tag}} <mat-icon matChipRemove *ngIf="tagsRemovable">cancel</mat-icon>
+            </mat-chip>
+            <input #tagInput [formControl]="tagControl" [matAutocomplete]="inputAutocomplete" [matChipInputFor]="tagChipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addTag($event)" style="font-size: 14px;" 
+                (keyup.esc)="toggleTagPane(true)">
+        </mat-chip-list> -->
+
+        <mat-autocomplete #inputAutocomplete="matAutocomplete" (optionSelected)="tagSelected($event)">
+            <mat-option *ngFor="let tag of filteredTags | async" value="tag.name" style="font-size: 14px;">{{tag.name}}</mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <div class="button-row">
+        <button mat-raised-button color="warn" type="button" (click)="toggleTagPane(true)">Close</button>
+    </div>
+</ng-container>
+<!-- end: Tag addition pane -->

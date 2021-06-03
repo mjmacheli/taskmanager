@@ -1,0 +1,95 @@
+<mat-table [dataSource]="taskList$ | async">
+    <ng-container matColumnDef="mark">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>                
+        <mat-cell *matCellDef="let task">
+            <button mat-mini-fab class="done-button" matTooltip="Mark as Completed" mdTooltipClass="{'mat-tooltip': true}" (click)="markTaskAsDone(task.id)">
+                <mat-icon>done</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="descr">
+        <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+        <mat-cell *matCellDef="let task">
+            <div matTooltip="{{task.description}}" matTooltipPosition="below" mdTooltipClass="{'mat-tooltip': true}">
+                {{task.description}}
+            </div>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="details">
+        <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
+        <mat-cell *matCellDef="let task">
+            <div matTooltip="{{task.details}}" matTooltipPosition="below" mdTooltipClass="{'mat-tooltip': true}" style="width: 100%">
+                <span class="details-row" *ngIf="task.details != null">{{task.details}}</span> 
+            </div>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="tags">
+        <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
+        <mat-cell *matCellDef="let task">
+            <div style="width: 100%">
+                <span  *ngIf="task.tags != null && task.tags.length > 0">
+                    <ng-container *ngFor="let tag of task.tags">
+                        <span class="tag-mini" matTooltip="{{tag}}" >{{tag}}</span>
+                    </ng-container>
+                </span>
+            </div>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="reminderDate">
+        <mat-header-cell *matHeaderCellDef>Reminder Date</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.reminderDate}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="dueDate">
+        <mat-header-cell *matHeaderCellDef>Due Date</mat-header-cell>
+        <mat-cell *matCellDef="let task" [ngClass]="{'almost-due':isWeekFromDue(task) && !isOverdue(task)}">{{task.dueDate}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let task">
+            <button mat-icon-button matTooltip="View details" mdTooltipClass="{'mat-tooltip': true}" (click)="openTaskDetailsPopup(task)"><mat-icon>menu</mat-icon></button>
+            <button mat-icon-button matTooltip="Reschedule" [matMenuTriggerFor]="menu" mdTooltipClass="{'mat-tooltip': true}"><mat-icon>date_range</mat-icon></button>
+            <mat-menu #menu="matMenu" yPosition="below">
+                <button mat-menu-item (click)="rescheduleTaskByDays(task.id, 1)">1 Day</button>
+                <button mat-menu-item (click)="rescheduleTaskByDays(task.id, 2)">2 Days</button>
+                <button mat-menu-item (click)="rescheduleTaskByDays(task.id, 3)">3 Days</button>
+                <button mat-menu-item (click)="rescheduleTaskByDays(task.id, 5)">5 Days</button>
+                <button mat-menu-item (click)="rescheduleTaskByWeeks(task.id, 1)">1 Week</button>
+                <button mat-menu-item [matMenuTriggerFor]="daysMenu">Days</button>
+                <button mat-menu-item [matMenuTriggerFor]="weeksMenu">Weeks</button>
+            </mat-menu>
+            <mat-menu #daysMenu="matMenu">
+                <ng-template matMenuContent>
+                    <button mat-menu-item (click)="rescheduleTaskByDays(task.id, 4)">4 Days</button>
+                    <button mat-menu-item (click)="rescheduleTaskByDays(task.id, 8)">8 Days</button>
+                    <button mat-menu-item (click)="rescheduleTaskByDays(task.id, 9)">9 Days</button>
+                    <button mat-menu-item (click)="rescheduleTaskByDays(task.id, 10)">10 Days</button>
+                </ng-template>
+            </mat-menu>
+            <mat-menu #weeksMenu="matMenu">
+                <ng-template matMenuContent>
+                    <button mat-menu-item (click)="rescheduleTaskByWeeks(task.id, 2)">2 Weeks</button>
+                    <button mat-menu-item (click)="rescheduleTaskByWeeks(task.id, 4)">4 Weeks</button>
+                    <button mat-menu-item (click)="rescheduleTaskByWeeks(task.id, 6)">6 Weeks</button>
+                    <button mat-menu-item (click)="rescheduleTaskByWeeks(task.id, 8)">8 Weeks</button>
+                    <button mat-menu-item (click)="rescheduleTaskByWeeks(task.id, 12)">12 Weeks</button>
+                </ng-template>
+            </mat-menu>
+            <button mat-icon-button matTooltip="Reschedule for Today" mdTooltipClass="{'mat-tooltip': true}" (click)="rescheduleTaskForToday(task.id)"><mat-icon>calendar_today</mat-icon></button>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="loading">
+        <mat-footer-cell *matFooterCellDef colspan="4">
+            Retrieving tasks...
+        </mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="noData">
+        <mat-footer-cell *matFooterCellDef colspan="4">
+            No tasks available.
+        </mat-footer-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="columnHeaders"></mat-header-row>
+    <mat-row *matRowDef="let task; columns: columnHeaders;" [ngClass]="{'todays-task': isTodaysTask(task), 'overdue': isOverdue(task)}"></mat-row>
+    <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': taskList$ != null}"></mat-footer-row>
+    <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide': !(taskList$ != null && taskListIsEmpty())}"></mat-footer-row>
+</mat-table>
+<mat-paginator [pageSizeOptions]="[25, 50, 100]" [pageSize]="25" showFirstLastButtons></mat-paginator>

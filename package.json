@@ -36,6 +36,8 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/material-moment-adapter": "^10.2.3",
+    "moment": "^2.29.1",
     "sqlite3": "^5.0.2",
     "typeorm": "0.2.18"
   },
