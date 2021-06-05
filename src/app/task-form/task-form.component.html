@@ -6,8 +6,7 @@
     </button>
 </mat-toolbar>
 
-<!-- Sort out -->
-<!-- <form [formGroup]="service.form" style="margin: 10px" (submit)="onSubmit()">
+<form [formGroup]="databaseService.form" style="margin: 10px" (submit)="onSubmit()">
     <div>
         <mat-form-field class="form-control" appearance="outline">
             <mat-label>Description <b style="color:red">*</b></mat-label>
@@ -56,6 +55,6 @@
     </div>
     <div class="button-row">
         <button mat-raised-button color="warn" type="button" (click)="onClose()">Cancel</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="service.form.invalid">Add Task</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="databaseService.form.invalid">Add Task</button>
     </div>
-</form> -->
+</form>

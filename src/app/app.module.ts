@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {FormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -53,6 +53,7 @@ import { MaterialModule } from './material/material.module';
 
 
         BrowserModule,
+        ReactiveFormsModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         FormsModule,
@@ -63,7 +64,8 @@ import { MaterialModule } from './material/material.module';
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: DateAdapter, useClass: MomentUtcDateAdapter },],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
+    entryComponents: [TaskFormComponent, TaskDetailsComponent]
 })
 export class AppModule {
 }

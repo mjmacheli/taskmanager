@@ -8,45 +8,46 @@ import {User} from "./data-access/entities/user.entity";
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+    title = 'front-end';
 
-    users: User[] = [];
-    displayedColumns: string[] = ['Id', 'FirstName', 'LastName', 'Age'];
+    // users: User[] = [];
+    // displayedColumns: string[] = ['Id', 'FirstName', 'LastName', 'Age'];
 
-    firstName: string = '';
-    lastName: string = '';
-    age: string = '';
+    // firstName: string = '';
+    // lastName: string = '';
+    // age: string = '';
 
-    constructor(private databaseService: DatabaseService) {
-        this.getUsers();
-    }
+    // constructor(private databaseService: DatabaseService) {
+    //     this.getUsers();
+    // }
 
-    getUsers(){
-        this.databaseService
-            .connection
-            .then(() => User.find())
-            .then(users => {
-                this.users = users;
-            })
-    }
+    // getUsers(){
+    //     this.databaseService
+    //         .connection
+    //         .then(() => User.find())
+    //         .then(users => {
+    //             this.users = users;
+    //         })
+    // }
 
-    addUser(){
-        const user = new User();
+    // addUser(){
+    //     const user = new User();
 
-        user.FirstName = this.firstName;
-        user.LastName = this.lastName;
-        user.Age = +this.age;
+    //     user.FirstName = this.firstName;
+    //     user.LastName = this.lastName;
+    //     user.Age = +this.age;
 
-        this.databaseService
-            .connection
-            .then(() => user.save())
-            .then(() => {
-                this.getUsers();
-            })
-            .then(() => {
-                this.firstName = '';
-                this.lastName = '';
-                this.age = '';
-            })
-    }
+    //     this.databaseService
+    //         .connection
+    //         .then(() => user.save())
+    //         .then(() => {
+    //             this.getUsers();
+    //         })
+    //         .then(() => {
+    //             this.firstName = '';
+    //             this.lastName = '';
+    //             this.age = '';
+    //         })
+    // }
 
 }

@@ -7,6 +7,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { map, startWith } from 'rxjs/operators';
+import { DatabaseService } from '../data-access/database.service';
 
 @Component({
   selector: 'app-task-form',
@@ -41,7 +42,9 @@ export class TaskFormComponent implements OnInit {
     { id: 84, value: '12 Weeks' }
   ];
 
-  constructor(public service: TaskService, private dialogRef: MatDialogRef<TaskFormComponent>) {
+  constructor(public service: TaskService, private dialogRef: MatDialogRef<TaskFormComponent>, 
+    
+    public databaseService: DatabaseService) {
     this.filteredTags = this.tagControl.valueChanges.pipe(
       startWith(null),
       map((tag: string | null) => (tag) ? this.filterTagOptions(tag) : this.allTags.slice())

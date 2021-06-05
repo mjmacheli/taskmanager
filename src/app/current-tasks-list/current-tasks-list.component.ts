@@ -4,6 +4,8 @@ import { TaskList } from '../classes/task-list';
 import { MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
 import { Observable } from 'rxjs';
 import { Task } from '../classes/task';
+import { DatabaseService } from '../data-access/database.service';
+import { ActiveTask } from '../data-access/entities/task/ActiveTask';
 
 @Component({
   selector: 'app-current-tasks-list',
@@ -12,11 +14,14 @@ import { Task } from '../classes/task';
 })
 export class CurrentTasksListComponent extends TaskList implements OnInit {
   taskList$ = null;
+  activeTasks: ActiveTask[] = [];
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   columnHeaders: string[] = ['mark', 'descr', 'details', 'tags', 'reminderDate', 'dueDate', 'actions'];
 
-  constructor(public service: TaskService, protected dialog: MatDialog, protected changeDetectorRefs: ChangeDetectorRef) { 
+  constructor(public service: TaskService, protected dialog: MatDialog, protected changeDetectorRefs: ChangeDetectorRef,
+    private databaseService: DatabaseService) {
     super(service, dialog, changeDetectorRefs);
+    this.getActiveTasks();
   }
 
   ngOnInit() {
@@ -33,6 +38,16 @@ export class CurrentTasksListComponent extends TaskList implements OnInit {
         this.setTaskTags(data.data[k]);
       }
      });
+  }
+
+  getActiveTasks() {
+    this.databaseService
+      .connection
+      .then(() => ActiveTask.find())
+      .then(activeTasks => {
+        this.activeTasks = activeTasks;
+        // console.log('back ', activeTasks)
+      })
   }
 
   markTaskAsDone(taskId: number) {
